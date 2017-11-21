@@ -11,5 +11,5 @@ def loadTweetsFile(sc: SparkContext, tweetFilePath: String): DataFrame = {
 
 val tweetsDF = loadTweetsFile(sc, raw)
 
-val naiveBayesModel = NaiveBayes.train(labeledRDD, lambda = 1.0, modelType = "multinomial")
+val naiveBayesModel = NaiveBayes.train(tweetsDF, lambda = 1.0, modelType = "multinomial")
 naiveBayesModel.save(sc, PropertiesLoader.naiveBayesModelPath)
