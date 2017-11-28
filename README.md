@@ -9,8 +9,7 @@ The purpose of this project is to using big data tools to build a near real-time
 3. Bitcoin Price Live stream
 4. Twitter Price Live stream
 
-
-### WorkFlow
+## WorkFlow
 1. Price deltas(nextDay - today) and tweets are joined on date
 2. A Naive Bayes model is trained based on historical Twitter Sentiments 
   * given a tweet, the model would output a Double as a score of whether it is bullish or bearish on BTC
