@@ -24,11 +24,17 @@ The purpose of this project is to using big data tools to build a near real-time
 ### NaiveBayesModel.scala
   1. Take a batch of rawtweets, perform data cleaning to leave only english words.
   2. Format the incoming file into a dataframe
-  3. perform labeling on the rows in the dataframe
-  4. train a NaiveBayesModel using the labeling points
-  5. Simple Test with one tweet
+  3. Remove stop words
+  4. perform labeling on the rows in the dataframe
+  5. train a NaiveBayesModel using the labeling points
+  6. Simple Test with one tweet
+  
+#### Execution
+Currently it can be ran in spark-shell as a script:
+:load btc-stream-predictor/src/main/scala/naiveBayesModel.scala
 
 #### TODO
   1. can't save model for reuse
   2. bigram
+  3. filepath currently hardcoded
 
