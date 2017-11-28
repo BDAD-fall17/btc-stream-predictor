@@ -33,7 +33,7 @@ The purpose of this project is to using big data tools to build a near real-time
 1. Takes the bitcoin historical data to calculate the price deltas (nextDat -Today)
 2. Takes the tweet sentimental scored data to calculate the average sentimental score for each day
 3. Builds an array of tweets for each day and their respective scores to train the prediction model
-4. 
+
 
 #### Execution
 Currently it can be ran in spark-shell as a script:
@@ -45,4 +45,5 @@ spark-shell --packages com.databricks:spark-csv_2.10:1.3.0
   1. can't save model for reuse
   2. bigram
   3. filepath currently hardcoded
+  4. Cannot save the file format as a text file
 
