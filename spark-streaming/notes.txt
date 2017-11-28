@@ -1,0 +1,18 @@
+Commands to submit the job to spark:
+
+```
+$SPARK_HOME/bin/spark-submit \
+  --master $SPARK_MASTER \
+  --jars $DEPENDENCIES \
+  --class me.baghino.spark.streaming.twitter.example.TwitterSentimentScore \
+  target/scala-2.11/spark-twitter-stream-example-assembly-1.0.0.jar
+```
+
+```
+$SPARK_HOME/bin/spark-submit --master local --jars $DEPENDENCIES --class me.baghino.spark.streaming.twitter.example.TwitterSentimentScore target/scala-2.11/spark-twitter-stream-example_2.11-1.0.0.jar
+```
+
+```
+export SPARK_HOME=/usr/local/Cellar/apache-spark/2.2.0/libexec
+export PYTHONPATH=/usr/local/Cellar/apache-spark/2.0.1/libexec/python/:$PYTHONP$
+```
