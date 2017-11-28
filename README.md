@@ -21,6 +21,7 @@ The purpose of this project is to using big data tools to build a near real-time
 5. The sentiment scores of a given period would then be averaged and fed to the regression model to output a predicted price change.
 
 ## File Description
+
 ### NaiveBayesModel.scala
   1. Take a batch of rawtweets, perform data cleaning to leave only english words.
   2. Format the incoming file into a dataframe
@@ -34,12 +35,32 @@ The purpose of this project is to using big data tools to build a near real-time
 2. Takes the tweet sentimental scored data to calculate the average sentimental score for each day
 3. Builds an array of tweets for each day and their respective scores to train the prediction model
 
+Execution:
 
-#### Execution
-Currently it can be ran in spark-shell as a script:
+Currently it can be run in spark-shell as a script:
+
+```
 spark-shell --packages com.databricks:spark-csv_2.10:1.3.0
 :load tweet_score.scala
 :load btc-stream-predictor/src/main/scala/naiveBayesModel.scala
+```
+
+### Spark Streaming
+
+File in `/spark-streaming/src`
+
+1. Takes in Twitter creds
+2. Creates a stream
+3. Helps load in data in real-time
+4. Needs to be submitted to spark in order to run
+
+Command:
+
+```
+$SPARK_HOME/bin/spark-submit --master local --jars $DEPENDENCIES --class me.baghino.spark.streaming.twitter.example.TwitterSentimentScore target/scala-2.11/spark-twitter-stream-example_2.11-1.0.0.jar
+```
+
+This is currently based on the repo: https://github.com/stefanobaghino/spark-twitter-stream-example
 
 #### TODO
   1. can't save model for reuse
