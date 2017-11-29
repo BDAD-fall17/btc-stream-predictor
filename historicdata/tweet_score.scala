@@ -32,17 +32,12 @@ val tweetsenti = sc.textFile("fall2017/data/tweets_with_sentiment.txt")
 val sentitweet_keyed = tweetsenti.map(line=>line.split("\\|\\|")).map(field =>(field(0).toString.split("T")(0), field(1), field(2)))
 
 
-
 //save as file
-sentitweet_keyed.saveAsTextFile("fall2017/files/sent.csv")
-
+sentitweet_keyed.saveAsTextFile("fall2017/files/sentimental.csv")
 
 
 //create tweet data grouped by date
 val sentitweet_combi = tweetsenti.map(line=>line.split("\\|\\|")).map(field =>(field(0).toString.split("T")(0),(field(1), field(2))))
-
-
-
 
 // group the sentimental data by key
 val tkey = sentitweet_combi.groupByKey()
@@ -56,15 +51,7 @@ tkey.saveAsTextFile("fall2017/files/combi.csv")
 val all_combi = tkey.join(coinRDD)
 
 //save as file
-all_combi.saveAsTextFile("fall2017/files/all.csv")
-
-all_combi.coalesce(1).write.format("com.databricks.spark.csv").save("fall2017/files/al")
-
-
-
-val allRDD = all_combi.rdd
-allRDD.saveAsTextFile("fall2017/files/all")
-
+all_combi.coalesce(1).saveAsTextFile("fall2017/files/senti_score.csv")
 
 
 
@@ -87,10 +74,7 @@ val count = tweetscore.reduceByKey((v1,v2)=>v1+v2)
 //join the date, tweet frequency and score
 val tweet_freqcount = count.join(freqcount)
 
-
-
 //find the average of the tweet scores per day
-
 val data = tweet_freqcount.map{line=>
 val avg = line._2._1/line._2._2
 (line._1, avg)
@@ -103,5 +87,6 @@ val avg = line._2._1/line._2._2
 val combiiii = coinRDD.join(data)
 val combs = combiiii.map(line=>(line._1, line._2._2,line._2._1._2))
 combs.take(10)
-
+val combsDF = combs.toDF()
 combs.saveAsTextFile("fall2017/files/bitdata.csv")
+combsDF.write.format("com.databricks.spark.csv").save("fall2017/files/finalfile.csv")
