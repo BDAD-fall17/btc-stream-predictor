@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun Dec 03 14:05:47 EST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0160-1dc5-2421-00000c4691c8 
+on database directory /Users/beacon/Classes/Sem03-BDAD/project/btc-stream-predictor/src/main/scala/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@6ea66c33 
+Loaded from file:/usr/local/Cellar/apache-spark/2.2.0/libexec/jars/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_112-b16
+user.dir=/Users/beacon/Classes/Sem03-BDAD/project/btc-stream-predictor/src/main/scala
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.13
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
