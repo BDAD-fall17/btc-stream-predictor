@@ -15,7 +15,7 @@ val customSchema_1 = StructType(Array(
 );
 
 
-val rawData = sc.textFile("file:///home/chc631/sparkClass/project/tweetwise_data/tweets_with_sentiment.txt")
+val rawData = sc.textFile("file://./btc-stream-predictor/src/main/resources/tweets_with_sentiment.txt")
 rawData.take(1)
 val rowRDD = rawData.map(line => Row.fromSeq(line.split("\\|\\|")))
 val tweetsDF = spark.createDataFrame(rowRDD, customSchema_1)
@@ -60,7 +60,7 @@ object PropertiesLoader {
   // val nltkStopWords = conf.getString("NLTK_STOPWORDS_FILE_NAME ")
   val nltkStopWords = "NLTK_English_Stopwords_Corpus.txt"
 }
-val stopWords = sc.textFile("file:////home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/NLTK_English_Stopwords_Corpus.txt")
+val stopWords = sc.textFile("file://./btc-stream-predictor/src/main/resources/NLTK_English_Stopwords_Corpus.txt")
 val stopWordsList = stopWords.collect.toList
 
 val labeledRDD = tweetsDF2.select("score", "tweet").rdd.map {
