@@ -4,7 +4,7 @@ import sqlCtx._
 import sqlCtx.implicits._
 
 //read the bitcoin file
-val bitRDD = sc.textFile("fall2017/data/bits.csv")
+val bitRDD = sc.textFile("BDAD/project/data/bits.csv")
 
 
 // find the price and the difference of todays and yesterdays price
@@ -20,20 +20,20 @@ prevprice = slit(4).toFloat
 
 
 //save as a file
-coinRDD.saveAsTextFile("fall2017/files/bitcoinsdata.csv")
+coinRDD.saveAsTextFile("BDAD/project/files/bitcoinsdata.csv")
 
 
 
 
 // create tweet sentimental analysis with data in the format of date, tweet, score
 
-val tweetsenti = sc.textFile("fall2017/data/tweets_with_sentiment.txt")
+val tweetsenti = sc.textFile("BDAD/project/data/tweets_with_sentiment.txt")
 
 val sentitweet_keyed = tweetsenti.map(line=>line.split("\\|\\|")).map(field =>(field(0).toString.split("T")(0), field(1), field(2)))
 
 
 //save as file
-sentitweet_keyed.saveAsTextFile("fall2017/files/sentimental.csv")
+sentitweet_keyed.saveAsTextFile("BDAD/project/files/sentimental.csv")
 
 
 //create tweet data grouped by date
@@ -43,7 +43,7 @@ val sentitweet_combi = tweetsenti.map(line=>line.split("\\|\\|")).map(field =>(f
 val tkey = sentitweet_combi.groupByKey()
 
 //save as file
-tkey.saveAsTextFile("fall2017/files/combi.csv")
+tkey.saveAsTextFile("BDAD/project/files/combi.csv")
 
 
 
@@ -51,7 +51,7 @@ tkey.saveAsTextFile("fall2017/files/combi.csv")
 val all_combi = tkey.join(coinRDD)
 
 //save as file
-all_combi.coalesce(1).saveAsTextFile("fall2017/files/senti_score.csv")
+all_combi.coalesce(1).saveAsTextFile("BDAD/project/files/senti_score.csv")
 
 
 
@@ -60,7 +60,10 @@ all_combi.coalesce(1).saveAsTextFile("fall2017/files/senti_score.csv")
 
 val tweetscore = tweetsenti.map(line=>line.split("\\|\\|")).map(field =>(field(0).toString.split("T")(0), field(2).toFloat))
 
+val test = coinRDD.join(tweetscore)
+test.take(5)
 
+/*
 
 //count the number of tweets
 val tweetfreq = tweetscore.map(line=>(line._1,1))
@@ -88,5 +91,18 @@ val combiiii = coinRDD.join(data)
 val combs = combiiii.map(line=>(line._1, line._2._2,line._2._1._2))
 combs.take(10)
 val combsDF = combs.toDF()
-combs.saveAsTextFile("fall2017/files/bitdata.csv")
-combsDF.write.format("com.databricks.spark.csv").save("fall2017/files/finalfile.csv")
+combs.saveAsTextFile("BDAD/project/files/bitdata.csv")
+// combsDF.write.format("com.databricks.spark.csv").save("BDAD/project/files/finalfile.csv")
+
+
+import org.apache.spark.sql.functions._
+// df.orderBy(asc("col1"))
+
+combsDF
+.orderBy(asc("_1"))
+// place all data in a single partition 
+.coalesce(1)
+.write.format("com.databricks.spark.csv")
+.option("header", "false")
+.save("BDAD/project/files/finalfile.csv")
+*/

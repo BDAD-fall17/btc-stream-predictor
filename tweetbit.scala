@@ -1,7 +1,7 @@
 import org.apache.spark.sql.SQLContext
-val sqlCtx = new SQLContext(sc)
-import sqlCtx._
-import sqlCtx.implicits._
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.serializer.KryoSerializer
+
 
 
 //case class bits (date: String, Volume: Float, Count:Float, marketcap: Float, price: Float, exchageVol:Float,generatedCoins:Float, fees:Float)
@@ -11,9 +11,23 @@ import sqlCtx.implicits._
 //bits(columns(0).toString.replaceAll("/","-"),columns(1).toFloat, columns(2).toFloat, columns(3).toFloat, columns(4).toFloat, columns(5).toFloat, columns(6).toFloat, columns(7).toFloat)
 // }
 
+object dataPreProcessor{
+  def createSparkContext(): SparkContext = {
+    val conf = new SparkConf()
+      .setAppName(this.getClass.getSimpleName)
+      .set("spark.serializer", classOf[KryoSerializer].getCanonicalName)
+    val sc = SparkContext.getOrCreate(conf)
+    sc
+  }
+case class bits (date: String, price: Float, prev_price:Float)
+case class tweets (Date:String, user:String, Tweets: String)
+def main(args: Array[String]) {
+  val sc = createSparkContext()
+val sqlCtx = new SQLContext(sc)
+import sqlCtx._
+import sqlCtx.implicits._
 val bitRDD = sc.textFile("fall2017/data/bits.csv")
 
-case class bits (date: String, price: Float, prev_price:Float)
 
 
 print("----trial trial trial-----")
@@ -35,7 +49,6 @@ val coinDF = coinRDD.toDF
 coinDF.show
 
 val tweetRDD = sc.textFile("fall2017/data/tweets_raw.txt")
-case class tweets (Date:String, user:String, Tweets: String)
 
 
 val tweet_RDD = tweetRDD.map{line=>
@@ -56,3 +69,5 @@ coinDF.registerTempTable("bitcoins")
 sqlCtx.sql("""select * from bitcoins""")
 
 sqlCtx.sql("""select bitcoins.date,price,prev_price,Tweets from bitcoins,tweets where bitcoins.date =tweets.Date""").show
+}
+}

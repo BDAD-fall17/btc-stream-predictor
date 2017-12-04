@@ -1,4 +1,5 @@
 import org.apache.spark._
+// import org.apache.spark
 import org.apache.spark.sql._
 import org.apache.spark.sql.Row
 import org.apache.spark.mllib.linalg.Vector
@@ -11,9 +12,16 @@ import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 
+object lrModelCreater{
 
+val spark = SparkSession
+.builder()
+.appName("Spark SQL basic example")
+.config("spark.some.config.option", "some-value")
+.getOrCreate()
+
+import spark.implicits._
 val rawData = spark.read.format("csv").option("header", "false").load("file:///home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/finalfile.csv")
-rawData.take(1)
 
 val df = rawData.selectExpr("cast(_c0 as string) time",
                         "cast(_c1 as double) score",
@@ -68,4 +76,4 @@ println("training Mean Squared Error = " + MSE)
 val testLabel = LabeledPoint(10.01001, org.apache.spark.mllib.linalg.Vectors.dense(0.3250635798285302))
 // val labeledRDD : RDD[org.apache.spark.mllib.regression.LabeledPoint] = labeledDataset.rdd
 model.predict(testLabel.features)
-
+}
