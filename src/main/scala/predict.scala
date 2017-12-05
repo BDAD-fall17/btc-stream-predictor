@@ -71,6 +71,7 @@ object pricePredictor{
     // val avgScore = -1
     
     val result = lrModel.predict(Vectors.dense(avgScore))
+    println(result)
   }
 }
 
