@@ -26,6 +26,11 @@ val configVersion = "1.3.0"
 //   case PathList("META-INF", xs@_*) => MergeStrategy.discard
 //   case x => (assemblyMergeStrategy in assembly).value(x)
 // }
+assemblyMergeStrategy in assembly := {
+ case PathList("org", "apache", "spark", "unused", "UnusedStubClass.class") => MergeStrategy.first
+ case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+ case x => MergeStrategy.first
+}
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % configVersion,
