@@ -63,8 +63,6 @@ $SPARK_HOME/bin/spark-submit --master local --jars $DEPENDENCIES --class me.bagh
 This is currently based on the repo: https://github.com/stefanobaghino/spark-twitter-stream-example
 
 #### TODO
-  1. can't save model for reuse
-  2. bigram
-  3. filepath currently hardcoded
-  4. Cannot save the file format as a text file
+  1. bigram
+  2. filepath currently hardcoded in file: Config file as a feature
 
