@@ -1,4 +1,5 @@
 import org.apache.spark._
+// import org.apache.spark
 import org.apache.spark.sql._
 import org.apache.spark.sql.Row
 import org.apache.spark.mllib.linalg.Vector
@@ -11,9 +12,27 @@ import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 
+object lrModelCreater{
+  def createSparkContext(): SparkContext = {
+    val conf = new SparkConf()
+      .setAppName("btc-analyzer")
+      //.set("spark.serializer", classOf[KryoSerializer].getCanonicalName)
+      .setMaster("local[2]")// .set("spark.executor.memory","1g")
+    val sc = SparkContext.getOrCreate(conf)
+    sc
+  }
 
+  def main(args: Array[String]){
+    val sc = createSparkContext()
+
+val spark = SparkSession
+.builder()
+.appName("Spark SQL basic example")
+.config("spark.some.config.option", "some-value")
+.getOrCreate()
+
+import spark.implicits._
 val rawData = spark.read.format("csv").option("header", "false").load("file:///home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/finalfile.csv")
-rawData.take(1)
 
 val df = rawData.selectExpr("cast(_c0 as string) time",
                         "cast(_c1 as double) score",
@@ -62,10 +81,12 @@ val MSE = valuesAndPreds.map{ case(v, p) => math.pow((v - p), 2) }.mean()
 println("training Mean Squared Error = " + MSE)
 
 // Save and load model
+model.save(sc, "file:///home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/lrModel")
 // model.save(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
 // val sameModel = LinearRegressionModel.load(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
 
 val testLabel = LabeledPoint(10.01001, org.apache.spark.mllib.linalg.Vectors.dense(0.3250635798285302))
 // val labeledRDD : RDD[org.apache.spark.mllib.regression.LabeledPoint] = labeledDataset.rdd
 model.predict(testLabel.features)
-
+  }
+}
