@@ -62,6 +62,7 @@ val MSE = valuesAndPreds.map{ case(v, p) => math.pow((v - p), 2) }.mean()
 println("training Mean Squared Error = " + MSE)
 
 // Save and load model
+model.save(sc, "file:///home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/lrModel")
 // model.save(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
 // val sameModel = LinearRegressionModel.load(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
 

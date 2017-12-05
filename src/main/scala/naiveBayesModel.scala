@@ -74,7 +74,7 @@ labeledRDD.cache()
 
 val naiveBayesModel = NaiveBayes.train(labeledRDD, lambda = 1.0, modelType = "multinomial")
 // naiveBayesModel.save(sc, PropertiesLoader.naiveBayesModelPath)
-naiveBayesModel.save(sc, "target/tmp/NaiveBayesModel")
+naiveBayesModel.save(sc, "file:///home/chc631/sparkClass/project/btc-stream-predictor/src/main/resources/nbModel")
 
 val test = getBarebonesTweetText("bitcoin is so good i should buy but i am shit at buying", stopWordsList)
 
