@@ -13,6 +13,17 @@ import org.apache.spark.sql.functions.udf
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 
 object lrModelCreater{
+  def createSparkContext(): SparkContext = {
+    val conf = new SparkConf()
+      .setAppName("btc-analyzer")
+      //.set("spark.serializer", classOf[KryoSerializer].getCanonicalName)
+      .setMaster("local[2]")// .set("spark.executor.memory","1g")
+    val sc = SparkContext.getOrCreate(conf)
+    sc
+  }
+
+  def main(args: Array[String]){
+    val sc = createSparkContext()
 
 val spark = SparkSession
 .builder()
@@ -77,4 +88,5 @@ model.save(sc, "file:///home/chc631/sparkClass/project/btc-stream-predictor/src/
 val testLabel = LabeledPoint(10.01001, org.apache.spark.mllib.linalg.Vectors.dense(0.3250635798285302))
 // val labeledRDD : RDD[org.apache.spark.mllib.regression.LabeledPoint] = labeledDataset.rdd
 model.predict(testLabel.features)
+  }
 }
