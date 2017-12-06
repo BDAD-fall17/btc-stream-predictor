@@ -1,3 +1,5 @@
 spark-streaming/project/*
 spark-streaming/target/*
 js/node_modules
+js/.env
+js/stream-live*

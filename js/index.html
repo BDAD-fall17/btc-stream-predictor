@@ -1,76 +1,111 @@
 <!doctype html>
-
-<title>BTC Predictions</title>
-
+<html lang="en">
 <meta charset="utf-8">
 
-<div id="tweets"></div>
+<head>
+  <title>BTC Predictions</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io.connect('/'),
-      tweets = document.getElementById('tweets');
-  socket.on('tweet', function (data) {
-    tweets.innerHTML = tweets.innerHTML + '<br>' + data;
-  });
-</script>
+<body>
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        BTC PREDICTION
+        <button type="button" onclick="startStreaming()" class="btn btn-primary pull-right">Stream</button>
+      </div>
+    </div>
 
-<style> /* set the CSS */
-  body, html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
+    <div id="tweets"></div>
 
-  .leftpane {
-      width: 50%;
-      height: 100%;
-      float: left;
-      border-collapse: collapse;
-  }
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('/'),
+          tweets = document.getElementById('tweets');
+      socket.on('tweet', function (data) {
+        tweets.innerHTML = tweets.innerHTML + '<br>' + data;
+      });
+    </script>
+    <script>
+      function startStreaming() {
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/stream", true);
+          xhttp.setRequestHeader("Content-type", "application/json");
+          xhttp.send();
+          var response = JSON.parse(xhttp.responseText);
+      }
+    </script>
+
+    <style> /* set the CSS */
+      body, html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      .leftpane {
+          width: 50%;
+          height: 100%;
+          float: left;
+          border-collapse: collapse;
+      }
 
 
-  .rightpane {
-      width: 50%;
-      height: 100%;
-      position: relative;
-      float: right;
-      
-      border-collapse: collapse;
-  }
+      .rightpane {
+          width: 50%;
+          height: 100%;
+          position: relative;
+          float: right;
+          border-collapse: collapse;
+      }
 
-  .container_chart_1 {
-      position: relative;
-      padding-bottom: 40%;
-      height: 0;
-      overflow: hidden;
-  }
-   
-  .container_chart_1 iframe {
-      position: absolute;
-      top:0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-  }
-</style>
+      .container_chart_1 {
+          position: relative;
+          padding-bottom: 40%;
+          height: 0;
+          overflow: hidden;
+      }
 
-<script type="script.js"></script>
+      .container_chart_1 iframe {
+          position: absolute;
+          top:0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+      }
+    </style>
 
-<div class ='container_chart_1' class="leftpane">
-  <iframe src="bar2.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_2'></iframe>
-</div>
+    <script type="script.js"></script>
 
-<div class ='container_chart_1' class="leftpane">
-  <iframe src="bit.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_1'></iframe>
-</div>
+    <div class ='container_chart_1' class="leftpane">
+      <iframe src="bar2.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_2'></iframe>
+    </div>
 
-<div class ='container_chart_1' class="rightpane">
-  <iframe src="senti.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
-</div>
+    <div class ='container_chart_1' class="leftpane">
+      <iframe src="bit.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_1'></iframe>
+    </div>
 
-<div class ='container_chart_1' class="rightpane">
-  <iframe src="bit-widget.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
-</div>
+    <div class ='container_chart_1' class="rightpane">
+      <iframe src="senti.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
+    </div>
 
+    <div class ='container_chart_1' class="rightpane">
+      <iframe src="bit-widget.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
+    </div>
+
+    <!--<div id="tweets"></div>
+
+    <script>
+      var socket = io.connect('/'),
+          tweets = document.getElementById('tweets');
+      socket.on('tweet', function (data) {
+        tweets.innerHTML = tweets.innerHTML + '<br>' + data;
+      });
+    </script>-->
+
+  </div>
 </body>
