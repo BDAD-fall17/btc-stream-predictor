@@ -20,6 +20,17 @@ The purpose of this project is to using big data tools to build a near real-time
 4. Live stream of tweets are first fed to the NBmodel, which output a series of sentiment scores
 5. The sentiment scores of a given period would then be averaged and fed to the regression model to output a predicted price change.
 
+## Usage
+
+### To run a predicition:
+
+1. cp newly accumulated tweetfile to src/main/resources/stream-list-sample.csv
+2. vim src/main/scala/predict.scala
+3. change RootDir to the abosulte path of the project
+4. cd to project root
+5. run $sbt assembly
+6. $spark-submit --class pricePredictor target/scala-2.11/btc-stream-predictor-assembly-0.1.jar
+
 ## File Description
 
 ### NaiveBayesModel.scala
