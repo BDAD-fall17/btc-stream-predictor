@@ -1,133 +1,114 @@
 <!DOCTYPE html>
 <svg width="1200" height="450"></svg>
 <style type="text/css">
-/* 13. Basic Styling with CSS */
 
-/* Style the lines by removing the fill and applying a stroke */
-.line {
+  /* Style the lines by removing the fill and applying a stroke */
+  .line {
     fill: none;
     stroke: #ffab00;
     stroke-width: 3;
-}
+  }
 
-/* Style the dots by assigning a fill and stroke */
-.dot {
+  /* Style the dots by assigning a fill and stroke */
+  .dot {
     fill: #ffab00;
     stroke: #fff;
-}
+  }
 
-
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 60px;
-  height: 28px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: orange;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: orange;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+  }
 
 </style>
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
-var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var svg = d3.select("svg"),
+      margin = {top: 20, right: 20, bottom: 30, left: 50},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom,
+      g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var parseTime = d3.timeParse("%Y-%m-%d");
-var formatTime = d3.timeFormat("%b %e");
+  var parseTime = d3.timeParse("%Y-%m-%d");
+  var formatTime = d3.timeFormat("%b %e");
 
+  var x = d3.scaleTime()
+      .rangeRound([0, width]);
 
-var x = d3.scaleTime()
-    .rangeRound([0, width]);
+  var y = d3.scaleLinear()
+      .rangeRound([height, 0]);
 
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
+  var line = d3.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.score); })
+      .curve(d3.curveMonotoneX);
 
+  var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
+  d3.csv("sentiscore.csv", function(d) {
+      d.date = parseTime(d.date);
+      d.score = +d.score;
+      return d;
+    }, function(error, data) {
+      if (error) throw error;
 
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+      y.domain(d3.extent(data, function(d) { return d.score; }));
 
-var line = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.score); })
- .curve(d3.curveMonotoneX); // apply smoothing to the line
+      g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
+      g.append("g")
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("sentimental score");
 
-var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-d3.csv("sentiscore.csv", function(d) {
-  d.date = parseTime(d.date);
-  d.score = +d.score;
-  return d;
-}, function(error, data) {
-  if (error) throw error;
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.score; }));
-
-
-   
-
-
-
-
-  g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-   ;
-
-  g.append("g")
-      .call(d3.axisLeft(y))
-    .append("text")
-      .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("sentimental score");
-
-  g.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 1.5)
-      .attr("d", line);
-      
-
-
-g.selectAll(".dot")
-    .data(data)
-  .enter().append("circle") // Uses the enter().append() method
-    .attr("class", "dot") // Assign a class for styling
-    .attr("cx", function(d, i) { return x(d.date) })
-    .attr("cy", function(d) { return y(d.score) })
-    .attr("r", 2)
-    .on("mouseover", function(d) {
-       div.transition()
-         .duration(200)
-         .style("opacity", .9);
-       div.html(formatTime(d.date) + "<br/>" + d.score)
-         .style("left", (d3.event.pageX) + "px")
-         .style("top", (d3.event.pageY - 28) + "px");
-       })
-     .on("mouseout", function(d) {
-       div.transition()
-         .duration(500)
-         .style("opacity", 0);
-       });
-    
-
-
-});
-
+      g.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "red")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
+          
+      g.selectAll(".dot")
+        .data(data)
+        .enter().append("circle") // Uses the enter().append() method
+        .attr("class", "dot") // Assign a class for styling
+        .attr("cx", function(d, i) { return x(d.date) })
+        .attr("cy", function(d) { return y(d.score) })
+        .attr("r", 2)
+        .on("mouseover", function(d) {
+            div.transition()
+              .duration(200)
+              .style("opacity", .9);
+            div.html(formatTime(d.date) + "<br/>" + d.score)
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+          })
+        .on("mouseout", function(d) {
+          div.transition()
+            .duration(500)
+            .style("opacity", 0);
+          });
+  });
 </script>

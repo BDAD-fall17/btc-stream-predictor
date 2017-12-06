@@ -1,192 +1,163 @@
 <meta charset="utf-8">
-<style> /* set the CSS */
 
-.bar { fill: orange; }
+<style>
 
+  .bar {
+    fill: orange;
+  }
 
-body {
-  font: 10px sans-serif;
-}
+  body {
+    font: 10px sans-serif;
+  }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
 
-.bar {
-  fill: orange;
-}
+  .bar {
+    fill: orange;
+  }
 
-.bar:hover {
-  fill: orangered ;
-}
+  .bar:hover {
+    fill: orangered ;
+  }
 
-.x.axis path {
-  display: none;
-}
+  .x.axis path {
+    display: none;
+  }
 
-.dot {
+  .dot {
     fill: #ffab00;
     stroke: #fff;
-}
+  }
 
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    border-radius: 2px;
+    font: 12px sans-serif;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
 
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 60px;
-  height: 28px;
-  padding: 2px;
-  border-radius: 2px;
-  font: 12px sans-serif;
-  background: rgba(0, 0, 0, 0.8);
-   color: #fff;
-
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-
-
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+  }
 </style>
+
 <body>
 	
-<!-- load the d3.js library -->    	
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+  <!-- load the d3.js library -->	
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
 
-// set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 1200 - margin.left - margin.right,
-    height = 450 - margin.top - margin.bottom;
+    // set the dimensions and margins of the graph
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 1200 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
 
-    
+    var parseTime = d3.timeParse("%Y-%m-%d");
+    //var parseTime = d3.time.format("%Y-%m").parse;
+    var formatTime = d3.timeFormat("%b %e");
+    // set the ranges
+    var x = d3.scaleBand()
+              .rangeRound([0, width])
+              .padding(0.2);
+              //.tickFormat(d3.time.format("%Y-%m"));;
+       // var x = d3.scaleTime().range([0, width]);
 
-var parseTime = d3.timeParse("%Y-%m-%d");
-//var parseTime = d3.time.format("%Y-%m").parse;
-var formatTime = d3.timeFormat("%b %e");
-// set the ranges
-var x = d3.scaleBand()
-          .rangeRound([0, width])
-          .padding(0.2);
-          //.tickFormat(d3.time.format("%Y-%m"));;
-   // var x = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
 
+    var formatPercent = d3.format(".0%");
 
+    var xAxis = d3.axisBottom();
+    /*
+        .scale(x)
+        .orient("bottom");
+    */
+    var yAxis = d3.axisLeft()
+    .tickFormat(formatPercent);
+              
+    // append the svg object to the body of the page
+    // append a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom+100)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // get the data
+    d3.csv("bardata.csv", function(error, data) {
+      if (error) throw error;
 
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
+      // format the data
+      data.forEach(function(d) {
+        d.date = parseTime(d.date);
+        d.exchangeVolume = +d.exchangeVolume;
+      });
 
+      // Scale the range of the data in the domains
+      x.domain(data.map(function(d) { return d.date; }));
 
+      // x.domain(d3.extent(data, function(d) { return d.date; }));
+      y.domain([0, d3.max(data, function(d) { return d.exchangeVolume; })]);
 
-var formatPercent = d3.format(".0%");
+      var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
+      // append the rectangles for the bar chart
+      g.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.date); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d) { return y(d.exchangeVolume); })
+        .attr("height", function(d) { return height - y(d.exchangeVolume); })
+        .on("mouseover", function(d) {
+          div.transition()
+            .duration(200)
+            .style("opacity", .9);
+          div.html(formatTime(d.date) + "<br/>" + d.exchangeVolume)
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY-100) + "px");
+        })
+        .on("mouseout", function(d) {
+          div.transition()
+            .duration(500)
+            .style("opacity", 0);
+          });
 
-
-
-var xAxis = d3.axisBottom();
-/*
-    .scale(x)
-    .orient("bottom");
-*/
-var yAxis = d3.axisLeft()
-.tickFormat(formatPercent);
-
-
-
-          
-// append the svg object to the body of the page
-// append a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom+100)
-  .append("g")
-    .attr("transform", 
-          "translate(" + margin.left + "," + margin.top + ")");
-g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-// get the data
-d3.csv("bardata.csv", function(error, data) {
-  if (error) throw error;
-
-  // format the data
-  data.forEach(function(d) {
-    d.date = parseTime(d.date);
-    d.exchangeVolume = +d.exchangeVolume;
-  });
-
-
-
-
- 
-  // Scale the range of the data in the domains
-  x.domain(data.map(function(d) { return d.date; }));
-
- // x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.exchangeVolume; })]);
-
-var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-  // append the rectangles for the bar chart
-  g.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.date); })
-      .attr("width", x.bandwidth())
-      .attr("y", function(d) { return y(d.exchangeVolume); })
-      .attr("height", function(d) { return height - y(d.exchangeVolume); })
-      .on("mouseover", function(d) {
-       div.transition()
-         .duration(200)
-         .style("opacity", .9);
-       div.html(formatTime(d.date) + "<br/>" + d.exchangeVolume)
-         .style("left", (d3.event.pageX) + "px")
-         .style("top", (d3.event.pageY-100) + "px");
-       })
-     .on("mouseout", function(d) {
-       div.transition()
-         .duration(500)
-         .style("opacity", 0);
-       });;
-
-
-
-
-  // add the x Axis
-  g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-      .selectAll("text")  
+      // add the x Axis
+      g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")  
         .style("text-anchor", "end")
         .attr("dx", "-.50em")
         .attr("dy", ".15em")
-         .attr("transform", "rotate(-35)")
-         ;
-    
-;
+        .attr("transform", "rotate(-35)");
 
-        
-  // add the y Axis
-  g.append("g")
-     .call(d3.axisLeft(y))
-      .append("text")
-      .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("exchangeVolume");
-
-
-});
-
-</script>
-
+      // add the y Axis
+      g.append("g")
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("exchangeVolume");
+    });
+  </script>
 </body>
