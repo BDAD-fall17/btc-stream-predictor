@@ -20,6 +20,8 @@
       </div>
     </div>
 
+    <ul id="tweets-list" class="list-group nav"></ul>
+
     <div id="tweets"></div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -27,7 +29,7 @@
       var socket = io.connect('/'),
           tweets = document.getElementById('tweets');
       socket.on('tweet', function (data) {
-        tweets.innerHTML = tweets.innerHTML + '<br>' + data;
+        $("#tweets-list").append('<li class="list-group-item">' + data.toString() + '</li>');
       });
     </script>
     <script>
@@ -45,6 +47,11 @@
         width: 100%;
         height: 100%;
         margin: 0;
+      }
+
+      .nav{
+          max-height: 500px;
+          overflow-y:scroll;
       }
 
       .leftpane {
