@@ -72,6 +72,25 @@ object pricePredictor{
     
     val result = lrModel.predict(Vectors.dense(avgScore))
     println(result)
+
+    val result2 = result.toString
+    import java.io.File
+    import java.io.FileWriter
+    // import java.io.IOException
+    val filepath = RootDir+ResourceDir+"predictionResult.txt"
+    val file = new File(filepath)
+    if (!file.exists()) {
+                file.createNewFile()
+            }
+    val fw = new FileWriter(filepath, true)
+    try{
+      fw.write(result2)
+    }
+    finally
+    {
+      fw.close()
+    }
+
   }
 }
 
