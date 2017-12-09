@@ -72,7 +72,7 @@
 
       .container_chart_1 {
           position: relative;
-          padding-bottom: 40%;
+          padding-bottom: 50%;
           height: 0;
           overflow: hidden;
       }
@@ -88,22 +88,30 @@
 
     <script type="script.js"></script>
 
-    <div class ='container_chart_1' class="leftpane">
+    <div class ='container_chart_1'>
       <iframe src="bar2.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_2'></iframe>
     </div>
 
-    <div class ='container_chart_1' class="leftpane">
+    <div class ='container_chart_1'>
       <iframe src="bit.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_1'></iframe>
     </div>
 
-    <div class ='container_chart_1' class="rightpane">
+    <div class ='container_chart_1'>
       <iframe src="senti.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
     </div>
 
-    <div class ='container_chart_1' class="rightpane">
-      <iframe src="bit-widget.html" frameborder='0' scrolling = 'no' id = 'iframe_chart_3'></iframe>
+    <div align="center">
+      <div class="btcwdgt-chart"></div>
+      <script>
+        (function(b,i,t,C,O,I,N) {
+          window.addEventListener('load',function() {
+            if(b.getElementById(C))return;
+            I=b.createElement(i),N=b.getElementsByTagName(i)[0];
+            I.src=t;I.id=C;N.parentNode.insertBefore(I, N);
+          },false)
+        })(document,'script','https://widgets.bitcoin.com/widget.js','btcwdgt');
+      </script>
     </div>
-
     <!--<div id="tweets"></div>
 
     <script>
