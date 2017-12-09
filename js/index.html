@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -16,13 +16,18 @@
     <div class="panel panel-default">
       <div class="panel-body">
         BTC PREDICTION
-        <button type="button" onclick="startStreaming()" class="btn btn-primary pull-right">Stream</button>
+        <div class="pull-right">
+          <button id="analyze" type="button" onclick="startAnalysis()" class="btn btn-success">Analyze</button>
+          <button id="stream" type="button" onclick="startStreaming()" class="btn btn-primary">Stream</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <p id="analyze-i"><i class="fa fa-circle-o-notch fa-spin"></i> Analyzing...</p>
+        <p id="res"></p>
       </div>
     </div>
 
     <ul id="tweets-list" class="list-group nav"></ul>
-
-    <div id="tweets"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -33,12 +38,40 @@
       });
     </script>
     <script>
+      $("#analyze-i").hide();
       function startStreaming() {
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/stream", true);
           xhttp.setRequestHeader("Content-type", "application/json");
           xhttp.send();
           var response = JSON.parse(xhttp.responseText);
+      }
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function startAnalysis() {
+          $("#analyze-i").show();
+          $("#analyze").addClass('disabled');
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/analyze", true);
+          xhttp.setRequestHeader("Content-type", "application/json");
+
+          xhttp.onreadystatechange = function () {
+              if (xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
+                  var response = JSON.parse(xhttp.responseText);
+
+                  $("#analyze-i").hide();
+                  $("#analyze").removeClass('disabled');
+                  $("#res").html("The result is: <b>" + response + "</b>");
+
+                  console.log("Spark response:", xhttp.responseText);
+              }
+          };
+
+          xhttp.send();
       }
     </script>
 
