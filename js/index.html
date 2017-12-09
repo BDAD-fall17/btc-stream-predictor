@@ -20,10 +20,12 @@
           <button id="analyze" type="button" onclick="startAnalysis()" class="btn btn-success">Analyze</button>
           <button id="stream" type="button" onclick="startStreaming()" class="btn btn-primary">Stream</button>
         </div>
+        <p></p>
+        <p id="tweet-count-display"></p>
       </div>
       <div class="panel-body">
         <p id="analyze-i"><i class="fa fa-circle-o-notch fa-spin"></i> Analyzing...</p>
-        <p id="res"></p>
+        <p id="result"></p>
       </div>
     </div>
 
@@ -34,10 +36,13 @@
       var socket = io.connect('/'),
           tweets = document.getElementById('tweets');
       socket.on('tweet', function (data) {
+        tweetCount++;
+        $("#tweet-count-display").html("Tweet Count: <b>" + tweetCount + "</b>");
         $("#tweets-list").append('<li class="list-group-item">' + data.toString() + '</li>');
       });
     </script>
     <script>
+      var tweetCount = 0;
       $("#analyze-i").hide();
       function startStreaming() {
           var xhttp = new XMLHttpRequest();
@@ -65,7 +70,7 @@
 
                   $("#analyze-i").hide();
                   $("#analyze").removeClass('disabled');
-                  $("#res").html("The result is: <b>" + response + "</b>");
+                  $("#result").html("The result is: <b>" + response + "</b>");
 
                   console.log("Spark response:", xhttp.responseText);
               }

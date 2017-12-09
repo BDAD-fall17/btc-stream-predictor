@@ -37,12 +37,11 @@ app.post('/stream', function(req, res) {
 
       jsonList.push(data);
 
-      if ((count % 100) === 0) {
-        //var fields = ["time", "text", "userId", "userName", "location", "followerCount"];
+      if ((count % 500) === 0) {
         var fields = ["created_at", "text", "user.id_str", "user.name", "user.location", "user.followers_count"];
         var csv = json2csv({ data: jsonList, fields: fields });
 
-        fs.writeFile('stream-live-'+count+'.csv', csv, function(err) {
+        fs.writeFile('stream-list-sample.csv', csv, function(err) {
           if (err) throw err;
           console.log('file saved');
           jsonList = [];
