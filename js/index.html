@@ -70,7 +70,7 @@
 
                   $("#analyze-i").hide();
                   $("#analyze").removeClass('disabled');
-                  $("#result").html("The result is: <b>" + response + "</b>");
+                  $("#result").html("The result is: <b>" + (response * 5000) + "</b>");
 
                   console.log("Spark response:", xhttp.responseText);
               }

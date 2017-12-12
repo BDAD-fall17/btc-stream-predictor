@@ -63,6 +63,32 @@ app.post('/analyze', function(req, res) {
         console.log(`exec error: ${error}`);
       }
 
+      console.log("Starting spark-submit!");
+
+      exec('sh spark-submit.sh',
+        (error, stdout, stderr) => {
+          console.log(`${stdout}`);
+          if (error !== null) {
+            console.log(`exec error: ${error}`);
+          }
+
+          res.send(`${stdout}`);
+        });
+    });
+});
+
+/*
+app.post('/analyze', function(req, res) {
+  const exec = require('child_process').exec;
+
+
+  exec('sh driver.sh',
+    (error, stdout, stderr) => {
+      console.log(`${stdout}`);
+      if (error !== null) {
+        console.log(`exec error: ${error}`);
+      }
+
       console.log("Starting sbt-assembly!");
 
       exec('sh sbt-assembly.sh',
@@ -86,6 +112,7 @@ app.post('/analyze', function(req, res) {
         });
     });
 });
+*/
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load();

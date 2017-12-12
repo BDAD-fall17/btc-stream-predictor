@@ -51,7 +51,8 @@ object pricePredictor{
     .getOrCreate()
     import spark.implicits._
     val protocol = "file://"
-    val RootDir = "/home/chc631/sparkClass/project/btc-stream-predictor"
+    //val RootDir = "/home/chc631/sparkClass/project/btc-stream-predictor"
+    val RootDir = "/Users/beacon/Classes/Sem03-BDAD/project/btc-stream-predictor"
     val ResourceDir = "/src/main/resources/"
     val prefix = protocol + RootDir + ResourceDir 
     val nbModel = NaiveBayesModel.load(sc, prefix +"nbModel")
